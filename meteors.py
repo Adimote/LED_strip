@@ -33,6 +33,5 @@ class Meteors:
 			x,y = led
 			# set color
 			self.state[x,y] = add_color(random_brightness(color),self.state[x,y])
-		print("Showing")
 		self.state.show()
 		time.sleep(wait_ms/1000.0)

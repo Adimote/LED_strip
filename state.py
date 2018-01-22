@@ -10,7 +10,7 @@ class State(object):
 		self.width = max([len(row) for row in mapping])
 		self.height = len(mapping)
 		self.led_colors = [[(0,0,0) for _ in row] for row in mapping]
-		self.positions = [[(x,y) for y in row] for x in mapping]
+		self.positions = [[(x,y) for y,_ in enumerate(row)] for x,row in enumerate(mapping)]
 		self._led_map = mapping
 		self.strip = strip
 	
@@ -21,9 +21,9 @@ class State(object):
 		for x,row in enumerate(self._led_map):
 			for y,_ in enumerate(row):
 				self[x,y] = func(self[x,y])
-	def any_on():
+	def any_on(self):
 		""" Return if any LEDs are on """
-		for x,row in enumerate(self.led_state):
+		for x,row in enumerate(self.led_colors):
 			for y,c in enumerate(row):
 				if color_limited(c) != (0,0,0):
 					return True
@@ -36,7 +36,7 @@ class State(object):
 	def __setitem__(self,pos,color):
 		x,y = pos
 		new_color = color_limited(color)
-		if new_color != self[x,y]:
+		if any([c1 != c2 for c1,c2 in zip(new_color,self[x,y])]):
 			self.strip.setPixelColor(self._led_map[x][y],
 				Color(new_color[0], new_color[1], new_color[2]))
 		self.led_colors[x][y] = color

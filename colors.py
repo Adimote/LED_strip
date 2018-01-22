@@ -9,7 +9,7 @@ from queue import Queue
 
 from threading import Thread
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 
 
@@ -40,8 +40,12 @@ message_queue = Queue()
 def change_led():
 	if request.method == 'POST':
 		state = request.form['state']
-		params = request.form['params']
+		if 'params' in request.form.values():
+			params = request.form['params']
+		else:
+			params = None
 		message_queue.put({'state':state,'params':params})
+		return redirect("/")
 	else:
 		return render_template('index.html')
 
@@ -65,8 +69,8 @@ def main_loop(strip, message_queue):
 			if msg == STOP:
 				break
 			else:
-				state = msg[0]
-				params = msg[1]
+				state = msg['state']
+				params = msg['params']
 		if state == 'meteors':
 			meteors.step()
 		elif state == 'rainbowy':
@@ -91,7 +95,7 @@ def main_loop(strip, message_queue):
 		#	map_leds(strip, (0, 255, 0))  # Blue wipe
 		#	map_leds(strip, (0, 0, 255))  # Green wipe
 		#	rainbowCycle(strip)
-		state.show()
+		led_state.show()
 def startup():
 	print("init")
 	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)

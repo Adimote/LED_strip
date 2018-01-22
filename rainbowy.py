@@ -12,19 +12,19 @@ class Rainbowy:
 		colors = [
 			interpolate(
 				[purple, white],
-				len(self.state.rows[0]), self.offset)
+				len(self.state.positions[0]), self.offset
 			),
 			interpolate(
 				[orange, red],
-				len(self.state.rows[1]), self.offset)
+				len(self.state.positions[1]), self.offset
 			),
 			interpolate(
 				[green, blue],
-				len(self.state.rows[2]), self.offset)
+				len(self.state.positions[2]), self.offset
 			),
 			interpolate(
 				[red, orange],
-				len(self.state.rows[3]), self.offset)
+				len(self.state.positions[3]), self.offset
 			),
 		]
 		for x,row in enumerate(colors):
