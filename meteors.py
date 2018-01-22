@@ -1,39 +1,38 @@
+import time
+import random
+from common import add_color,wheel,random_brightness
 
+class Meteors:
 
-class Meteors(object):
-
-	def __init__(self,strip,led_colors):
+	def __init__(self,state):
 		self.meteors = []
 		self.cooldown = 0
-		self.strip = strip
+		self.state = state
 
-	def add_meteor(leds,color):
-		meteor = (color, leds)
-		self.meteors.append(meteor)
+	def add_meteor(self,pos,color):
+		self.meteors.append((color,pos))
 
-	def add_color(x,y,color):
-		self.led_colors[x][y] = tuple([old+new for new,old in zip(color,led_colors[x][y])])
-			
-
-	def step(wait_ms=5):
-		map_all(self.strip,lambda c: tuple([max(x-15,0) for x in c]))
+	def step(self,wait_ms=5):
+		self.state.map_all(lambda c: tuple([max(x-15,0) for x in c]))
 		self.cooldown -= 1
-		if random.random() < 0.05 and cooldown <= 0:
-			cooldown = 20
+		if random.random() < 0.05 and self.cooldown <= 0:
+			self.cooldown = 20
 			direction = random.choice([-1,1])
-			shelves = [[led_map_and_index[0],led_map_and_index[1]],[led_map_and_index[2],led_map_and_index[3]]]
+			shelves = [
+				[self.state.positions[0],self.state.positions[1]],
+				[self.state.positions[2],self.state.positions[3]],
+			]
 			shelf = random.choice(shelves)
-			add_meteor(shelf[0][::direction],wheel_c(random.randint(0,255)))
-			add_meteor(shelf[1][::direction],wheel_c(random.randint(0,255)))
+			self.add_meteor(shelf[0][::direction],wheel(random.randint(0,255)))
+			self.add_meteor(shelf[1][::direction],wheel(random.randint(0,255)))
 		for color,leds in self.meteors:
 			if not leds:
 				self.meteors.remove((color,leds))
 				continue
 			led = leds.pop()
-			l,(x,y) = led
+			x,y = led
 			# set color
-			add_color(x,y,random_brightness(color))
-		self.strip.show()
+			self.state[x,y] = add_color(random_brightness(color),self.state[x,y])
+		print("Showing")
+		self.state.show()
 		time.sleep(wait_ms/1000.0)
-
-			
