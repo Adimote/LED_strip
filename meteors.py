@@ -13,7 +13,7 @@ class Meteors:
 		self.meteors.append((color,pos))
 
 	def step(self,wait_ms=5):
-		self.state.map_all(lambda c: tuple([max(x-15,0) for x in c]))
+		self.state.map_all(lambda _, c: tuple([max(x-15,0) for x in c]))
 		self.cooldown -= 1
 		if random.random() < 0.05 and self.cooldown <= 0:
 			self.cooldown = 20
@@ -33,5 +33,4 @@ class Meteors:
 			x,y = led
 			# set color
 			self.state[x,y] = add_color(random_brightness(color),self.state[x,y])
-		self.state.show()
 		time.sleep(wait_ms/1000.0)

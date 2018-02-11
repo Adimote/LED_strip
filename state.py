@@ -20,7 +20,7 @@ class State(object):
 		"""
 		for x,row in enumerate(self._led_map):
 			for y,_ in enumerate(row):
-				self[x,y] = func(self[x,y])
+				self[x,y] = func((x,y),self[x,y])
 	def any_on(self):
 		""" Return if any LEDs are on """
 		for x,row in enumerate(self.led_colors):

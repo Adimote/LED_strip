@@ -7,7 +7,7 @@ def map_leds(strip,color,wait_ms=5):
         while True:
                 still_setting = False
                 # Fade
-                map_all(strip,lambda c: tuple([max(x-20,0) for x in c]))
+                map_all(strip,lambda _, c: tuple([max(x-20,0) for x in c]))
                 for x,row in enumerate(led_map):
                         for y,l in enumerate(row):
                                 x_pos = x * len(row)/len(led_map)

@@ -16,6 +16,7 @@ from flask import Flask, render_template, request, redirect
 from state import State
 from meteors import Meteors
 from rainbowy import Rainbowy
+from coding_all_night import Coding
 from standards import colorWipe
 
 from neopixel import *
@@ -58,11 +59,12 @@ def main_loop(strip, message_queue):
 		list(range(85,122)),
 		list(range(158,121,-1)),
 	]
-	state = 'meteors'	
+	state = 'coding'
 	params = None
 	led_state = State(led_map,strip)
 	meteors = Meteors(led_state)
 	rainbowy = Rainbowy(led_state)
+	coding = Coding(led_state)
 	while True:
 		if not message_queue.empty():
 			msg = message_queue.get()
@@ -75,9 +77,11 @@ def main_loop(strip, message_queue):
 			meteors.step()
 		elif state == 'rainbowy':
 			rainbowy.step()
+		elif state == 'coding':
+			coding.step()
 		else:
 			if led_state.any_on():
-				led_state.map_all(lambda c: tuple([max(x-15,0) for x in c]))
+				led_state.map_all(lambda _, c: tuple([max(x-15,0) for x in c]))
 			else:
 				# Save energy by sleeping a bit
 				time.sleep(0.5)
@@ -115,5 +119,7 @@ def startup():
 	# Intialize the library (must be called once before other functions).
 	strip.begin()
 	thread.start()
+	app.run()
 
-startup()
+if __name__ == "__main__":
+	startup()
